@@ -1,0 +1,9 @@
+[
+  {
+    "produit": "Pomme",
+    "ville": "Niamey",
+    "prix": "850",
+    "date": "2024-01-15",
+    "categorie": "fruits_legumes"
+  }
+]
