@@ -69,7 +69,7 @@ PRODUCT_EMOJIS = {
       'piment':'🌶️',  'haricot vert':'🫛',
      'tchappata et guisma':'🌿',
     'banane': '🍌', 'orange': '🍊', 'viande': '🍖', 'poisson': '🐟',
-    'lait': '🥛', 'fromage': '🧀', 'gâteau': '🎂', 'soumbala': '🏺',
+    'lait': '🥛', 'fromage': '🧀', 'gâteau': '🎂', 'soumbala': '🧆',
     'yazi': '', 'ail': '🧄', 'poulet': '🐔', 'boeuf': '🥩',
     'carotte': '🥕', 'salade': '🥬', 'viande hachée': '🥓', 
     'yaourt': '🥣', 'beurre': '🧈', 'crème': '🍦', 'canelle': '🪵',
