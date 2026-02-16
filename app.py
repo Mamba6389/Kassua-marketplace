@@ -1,5 +1,5 @@
 
-# app.py
+# app.py - KASSUA Marketplace (SQLite + Streamlit)
 import streamlit as st
 import json
 import os
@@ -14,7 +14,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 import hashlib
 import secrets
-import pymysql
 
 # Configuration de la page
 st.set_page_config(
@@ -107,36 +106,12 @@ try:
 except Exception:
     pass
 
-# --- Database (MySQL via SQLAlchemy) ---
-# Read connection params from environment (defaults for local XAMPP)
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "habou")
+# --- Database (SQLite via SQLAlchemy) ---
+# Using SQLite for portability and Streamlit Cloud compatibility
+DB_PATH = "kassua.db"
 
-def create_database_if_not_exists(host, port, user, password, db_name):
-    try:
-        conn = pymysql.connect(host=host, user=user, password=password, port=int(port), charset='utf8mb4')
-        with conn.cursor() as cur:
-            cur.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
-        conn.commit()
-    except Exception as e:
-        # warn but continue; app may still work if DB already exists or user will fix credentials
-        try:
-            st.warning(f"Warning creating database {db_name}: {e}")
-        except Exception:
-            pass
-    finally:
-        try:
-            conn.close()
-        except Exception:
-            pass
-
-# Ensure database exists before creating SQLAlchemy engine
-create_database_if_not_exists(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-
-engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
+# Create SQLite engine (creates file if not exists)
+engine = create_engine(f"sqlite:///{DB_PATH}", echo=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
