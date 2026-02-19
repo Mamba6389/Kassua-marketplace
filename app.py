@@ -1464,6 +1464,29 @@ def admin_dashboard():
                 df = df.drop(columns=['password'])
             st.dataframe(df, use_container_width=True)
 
+            st.markdown("**Actions**")
+            # Afficher chaque utilisateur avec un bouton de suppression
+            for idx, usr in enumerate(list(users)):
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    uname = usr.get('username') or usr.get('email')
+                    role = 'Admin' if usr.get('is_admin') else 'User'
+                    st.write(f"**{uname}** — {usr.get('email','—')} — {role}")
+                with cols[1]:
+                    if st.button("🗑️ Supprimer", key=f"admin_delete_user_{idx}"):
+                        # Ne pas permettre la suppression du compte admin courant par inadvertance
+                        current = st.session_state.get('current_user')
+                        if current and (current == usr.get('username') or current == usr.get('email')):
+                            st.error("Vous ne pouvez pas supprimer l'utilisateur actuellement connecté.")
+                        else:
+                            try:
+                                st.session_state.users.pop(idx)
+                                save_users(st.session_state.users)
+                                st.success("Utilisateur supprimé.")
+                                st.rerun()
+                            except Exception:
+                                st.error("Erreur lors de la suppression de l'utilisateur.")
+
     # Produits
     with tabs[1]:
         st.subheader("Gérer les produits")
@@ -1666,6 +1689,32 @@ def admin_stats_tab():
     st.subheader("Liste complète des achats")
     df_purchases = pd.DataFrame(purchases)
     st.dataframe(df_purchases, use_container_width=True)
+
+    st.markdown("**Actions sur les achats**")
+    # Boutons pour supprimer des achats individuellement
+    for i, p in enumerate(list(purchases)):
+        cols = st.columns([4, 1])
+        with cols[0]:
+            st.write(f"**{p.get('produit','—')}** — {p.get('prix','—')} FCFA — Acheteur: {p.get('acheteur','—')} — Date: {p.get('date_achat','—')}")
+        with cols[1]:
+            if st.button("🗑️ Supprimer", key=f"admin_delete_purchase_{i}"):
+                try:
+                    st.session_state.purchases.pop(i)
+                    save_purchases(st.session_state.purchases)
+                    st.success("Achat supprimé.")
+                    st.rerun()
+                except Exception:
+                    st.error("Erreur lors de la suppression de l'achat.")
+
+    # Option pour supprimer tous les achats
+    if st.button("🗑️ Supprimer tous les achats", key="admin_delete_all_purchases"):
+        try:
+            st.session_state.purchases = []
+            save_purchases(st.session_state.purchases)
+            st.success("Tous les achats ont été supprimés.")
+            st.rerun()
+        except Exception:
+            st.error("Impossible de supprimer tous les achats.")
 
 
 def cart_page():
