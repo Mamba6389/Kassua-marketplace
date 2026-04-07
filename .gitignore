@@ -62,4 +62,3 @@ Thumbs.db
 *.backup
 *.bak
 backups/
-.streamlit/secrets.toml
